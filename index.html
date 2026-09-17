@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order of Transformations</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <h1>Order of transformations: <span class="m">y = <i>f</i>(<i>a</i><i>x</i> + <i>b</i>)</span></h1>
+      <p class="lede">
+        Why does <span class="m">y = <i>f</i>(2<i>x</i> + 3)</span> move the graph left by
+        <span class="m"><span class="frac"><span>3</span><span>2</span></span></span> and not by 3?
+        Start with the short walkthrough, then explore, build it yourself and test yourself.
+      </p>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button role="tab" class="tab" data-tab="learn" aria-selected="true">★ Start here</button>
+        <button role="tab" class="tab" data-tab="explore" aria-selected="false">1 · Explore</button>
+        <button role="tab" class="tab" data-tab="match" aria-selected="false">2 · Match the graph</button>
+        <button role="tab" class="tab" data-tab="quiz" aria-selected="false">3 · Test yourself</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ================= GUIDED WALKTHROUGH ================= -->
+    <section id="tab-learn" class="panel" role="tabpanel">
+      <div class="learn card">
+        <div class="ln-progress">
+          <span id="ln-count" class="label"></span>
+          <div class="ln-dots" id="ln-dots"></div>
+        </div>
+        <div id="ln-body" class="ln-body" aria-live="polite"></div>
+        <div class="ln-graph">
+          <div class="ln-now m" id="ln-now"></div>
+          <svg id="ln-graph" class="graph" aria-label="Walkthrough graph"></svg>
+          <div class="legend" id="ln-legend">
+            <span><i class="sw sw-orig"></i> <span class="m">y = <i>f</i>(<i>x</i>)</span></span>
+            <span><i class="sw sw-cur"></i> transformed graph</span>
+            <span id="ln-legend-target" hidden><i class="sw sw-target"></i> target <span class="m">y = <i>f</i>(2<i>x</i> + 3)</span></span>
+          </div>
+        </div>
+        <div id="ln-after" class="ln-after" aria-live="polite"></div>
+        <div class="ln-nav">
+          <button id="ln-back" class="btn ghost">◀ Back</button>
+          <button id="ln-next" class="btn primary">Next ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= EXPLORE ================= -->
+    <section id="tab-explore" class="panel" role="tabpanel" hidden>
+      <div class="layout">
+        <aside class="side">
+          <div class="card">
+            <h2>1. Pick a graph <span class="m">y = <i>f</i>(<i>x</i>)</span></h2>
+            <div class="seg" id="ex-func">
+              <button data-func="zigzag" class="on">Zigzag</button>
+              <button data-func="cubic">Cubic</button>
+              <button data-func="parabola">Quadratic</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>2. Build <span class="m">y = <i>f</i>(<i>a</i><i>x</i> + <i>b</i>)</span></h2>
+            <div class="field">
+              <span class="label">Value of <i class="m">a</i></span>
+              <div class="chips" id="ex-a">
+                <button data-a="-2">−2</button>
+                <button data-a="-1">−1</button>
+                <button data-a="-1/2">−½</button>
+                <button data-a="1/2">½</button>
+                <button data-a="2" class="on">2</button>
+                <button data-a="3">3</button>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label">Value of <i class="m">b</i></span>
+              <div class="stepper">
+                <button id="ex-b-minus" aria-label="Decrease b">−</button>
+                <input type="range" id="ex-b" min="-6" max="6" step="1" value="3" aria-label="b">
+                <button id="ex-b-plus" aria-label="Increase b">+</button>
+                <output id="ex-b-val" class="m">3</output>
+              </div>
+            </div>
+          </div>
+
+          <div class="card expr-card">
+            <div class="expr-big m" id="ex-expr"></div>
+            <div class="expr-sub">
+              <span class="label">Factorise the bracket</span>
+              <div class="m expr-factor" id="ex-factor"></div>
+              <p class="small" id="ex-factor-note"></p>
+            </div>
+          </div>
+
+          <div class="card idea">
+            <h2>Key idea</h2>
+            <p>Inside the bracket, the graph undoes what happens to <i>x</i>, so the transformations come in the <b>reverse order</b>.</p>
+            <ul id="ex-idea"></ul>
+          </div>
+        </aside>
+
+        <div class="stage">
+          <div class="card">
+            <span class="label">Choose an order</span>
+            <div class="seg route" id="ex-route">
+              <button data-route="factor" class="on">Factorise: stretch, then translate</button>
+              <button data-route="translate">Don't factorise: translate, then stretch</button>
+              <button data-route="mistake" class="warn">Common mistake</button>
+            </div>
+
+            <div class="graph-wrap">
+              <svg id="ex-graph" class="graph" aria-label="Graph showing the transformation"></svg>
+            </div>
+            <div class="legend">
+              <span><i class="sw sw-orig"></i> <span class="m">y = <i>f</i>(<i>x</i>)</span></span>
+              <span><i class="sw sw-cur"></i> current step</span>
+              <label class="sw-toggle"><input type="checkbox" id="ex-target" checked> <i class="sw sw-target"></i> target <span class="m" id="ex-target-eq"></span></label>
+            </div>
+
+            <div class="steps" id="ex-steps"></div>
+            <div class="controls">
+              <button id="ex-back" class="btn ghost">◀ Back</button>
+              <button id="ex-play" class="btn">▶ Play all</button>
+              <button id="ex-next" class="btn primary">Next step ▶</button>
+            </div>
+            <div class="explain" id="ex-explain" aria-live="polite"></div>
+          </div>
+
+          <div class="card">
+            <h2>Follow the points</h2>
+            <p class="small">Only the <i>x</i>-coordinates change. The <i>y</i>-coordinates stay the same throughout.</p>
+            <div class="table-wrap" id="ex-table"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MATCH ================= -->
+    <section id="tab-match" class="panel" role="tabpanel" hidden>
+      <div class="layout">
+        <aside class="side">
+          <div class="card">
+            <div class="row between">
+              <div class="seg small-seg" id="mt-level">
+                <button data-level="starter" class="on">Starter</button>
+                <button data-level="challenge">Challenge</button>
+              </div>
+              <div class="seg small-seg" id="mt-func">
+                <button data-func="zigzag" class="on">Zigzag</button>
+                <button data-func="cubic">Cubic</button>
+              </div>
+            </div>
+            <span class="label">Transform <span class="m">y = <i>f</i>(<i>x</i>)</span> to get the dashed target</span>
+            <div class="expr-big m target-eq" id="mt-target"></div>
+            <button id="mt-new" class="btn ghost full">New target ↻</button>
+          </div>
+
+          <div class="card plan">
+            <h2>Plan your two transformations</h2>
+            <p class="small plan-intro">You can do them in <b>either order</b>. Press <b>⇅ Swap order</b> (or drag a card) to choose which comes first, fill in the numbers, then press Play.</p>
+            <div class="seq" id="mt-seq">
+              <div class="seqcard" data-kind="translate">
+                <div class="seqhead">
+                  <span class="ord"></span>
+                  <span class="grip" title="Drag to reorder" aria-hidden="true">⠿</span>
+                </div>
+                <span class="label">Translate horizontally</span>
+                <div class="row">
+                  <select id="mt-dir" aria-label="Direction">
+                    <option value="left">left</option>
+                    <option value="right">right</option>
+                  </select>
+                  <span>by</span>
+                  <input id="mt-tr-amt" type="text" placeholder="e.g. 3/2" aria-label="Translation amount">
+                </div>
+              </div>
+              <button id="mt-swap" class="swap" type="button">⇅ Swap order</button>
+              <div class="seqcard" data-kind="stretch">
+                <div class="seqhead">
+                  <span class="ord"></span>
+                  <span class="grip" title="Drag to reorder" aria-hidden="true">⠿</span>
+                </div>
+                <span class="label">Stretch parallel to the <i>x</i>-axis</span>
+                <div class="row">
+                  <span>scale factor</span>
+                  <input id="mt-sf" type="text" placeholder="e.g. 1/2" aria-label="Scale factor">
+                </div>
+                <label class="refl" id="mt-refl-wrap" hidden><input type="checkbox" id="mt-refl"> and reflect in the <i>y</i>-axis</label>
+              </div>
+            </div>
+            <button id="mt-play" class="btn primary full">▶ Play both steps</button>
+            <p class="small">Fractions like <span class="m">3/2</span> or decimals like <span class="m">1.5</span> both work.</p>
+          </div>
+        </aside>
+
+        <div class="stage">
+          <div class="card">
+            <div class="graph-wrap">
+              <svg id="mt-graph" class="graph" aria-label="Graph for matching the target"></svg>
+            </div>
+            <div class="legend">
+              <span><i class="sw sw-orig"></i> <span class="m">y = <i>f</i>(<i>x</i>)</span></span>
+              <span><i class="sw sw-target"></i> target</span>
+              <span><i class="sw sw-cur"></i> your graph: <span class="m" id="mt-current"></span></span>
+            </div>
+            <div class="explain" id="mt-step" hidden></div>
+            <div class="msg" id="mt-msg" aria-live="polite"></div>
+          </div>
+          <div class="card">
+            <div class="row between">
+              <h2>Orders you've matched</h2>
+              <div class="badges" id="mt-badges"></div>
+            </div>
+            <p class="small">Match this target <b>both ways</b>: once translating first, and once stretching first.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= QUIZ ================= -->
+    <section id="tab-quiz" class="panel" role="tabpanel" hidden>
+      <div class="layout">
+        <aside class="side">
+          <div class="card">
+            <div class="row between">
+              <div class="seg small-seg" id="qz-level">
+                <button data-level="starter" class="on">Starter</button>
+                <button data-level="challenge">Challenge</button>
+              </div>
+              <div class="score" id="qz-score">0 / 0</div>
+            </div>
+          </div>
+          <div id="qz-body"></div>
+        </aside>
+
+        <div class="stage">
+          <div class="card">
+            <div class="graph-wrap">
+              <svg id="qz-graph" class="graph" aria-label="Quiz graph"></svg>
+            </div>
+            <div class="legend">
+              <span><i class="sw sw-orig"></i> <span class="m">y = <i>f</i>(<i>x</i>)</span></span>
+              <span id="qz-legend-target" hidden><i class="sw sw-target"></i> <span class="m" id="qz-target-eq"></span></span>
+            </div>
+            <div class="watch" id="qz-watch" hidden>
+              <span class="label">Watch it happen</span>
+              <div class="row">
+                <button class="btn" data-route="factor">Stretch, then translate</button>
+                <button class="btn" data-route="translate">Translate, then stretch</button>
+                <button class="btn warn-btn" data-route="mistake">Common mistake</button>
+              </div>
+            </div>
+            <div class="explain" id="qz-caption" aria-live="polite">Answer all three parts to unlock the animation.</div>
+            <button id="qz-next" class="btn primary full" hidden>Next question ▶</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
