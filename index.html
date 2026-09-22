@@ -9,13 +9,12 @@
 <body>
   <header class="top">
     <div class="wrap">
-      <h1>Order of transformations: <span class="m">y = <i>f</i>(<i>a</i><i>x</i> + <i>b</i>)</span></h1>
-      <p class="lede">
-        Why does <span class="m">y = <i>f</i>(2<i>x</i> + 3)</span> move the graph left by
-        <span class="m"><span class="frac"><span>3</span><span>2</span></span></span> and not by 3?
-        Start with the short walkthrough, then explore, build it yourself and test yourself.
-      </p>
-      <nav class="tabs" role="tablist" aria-label="Sections">
+      <div class="title-row">
+        <h1 id="title">Order of transformations</h1>
+        <button id="change-topic" class="btn ghost small-btn" hidden>☰ Change topic</button>
+      </div>
+      <p class="lede" id="lede"></p>
+      <nav class="tabs" id="tabs" role="tablist" aria-label="Sections" hidden>
         <button role="tab" class="tab" data-tab="learn" aria-selected="true">★ Start here</button>
         <button role="tab" class="tab" data-tab="explore" aria-selected="false">1 · Explore</button>
         <button role="tab" class="tab" data-tab="match" aria-selected="false">2 · Match the graph</button>
@@ -26,8 +25,31 @@
 
   <main class="wrap">
 
+    <!-- ================= TOPIC MENU ================= -->
+    <section id="menu" class="menu">
+      <h2 class="menu-q">Which would you like to do?</h2>
+      <div class="menu-grid">
+        <button class="menu-card" data-mode="outside">
+          <span class="menu-tag">Start here</span>
+          <svg class="graph menu-graph" id="menu-g-outer" aria-hidden="true"></svg>
+          <span class="menu-eq m">y = <i>a</i><i>f</i>(<i>x</i>) + <i>b</i></span>
+          <span class="menu-title">Changes <b>outside</b> the function</span>
+          <span class="menu-desc">Vertical stretches and translations, like <span class="m">y = 2<i>f</i>(<i>x</i>) + 3</span></span>
+          <span class="menu-go">Open ▶</span>
+        </button>
+        <button class="menu-card" data-mode="inside">
+          <span class="menu-tag alt">Next</span>
+          <svg class="graph menu-graph" id="menu-g-inner" aria-hidden="true"></svg>
+          <span class="menu-eq m">y = <i>f</i>(<i>a</i><i>x</i> + <i>b</i>)</span>
+          <span class="menu-title">Changes <b>inside</b> the function</span>
+          <span class="menu-desc">Horizontal stretches and translations, like <span class="m">y = <i>f</i>(2<i>x</i> + 3)</span></span>
+          <span class="menu-go">Open ▶</span>
+        </button>
+      </div>
+    </section>
+
     <!-- ================= GUIDED WALKTHROUGH ================= -->
-    <section id="tab-learn" class="panel" role="tabpanel">
+    <section id="tab-learn" class="panel" role="tabpanel" hidden>
       <div class="learn card">
         <div class="ln-progress">
           <span id="ln-count" class="label"></span>
@@ -40,7 +62,7 @@
           <div class="legend" id="ln-legend">
             <span><i class="sw sw-orig"></i> <span class="m">y = <i>f</i>(<i>x</i>)</span></span>
             <span><i class="sw sw-cur"></i> transformed graph</span>
-            <span id="ln-legend-target" hidden><i class="sw sw-target"></i> target <span class="m">y = <i>f</i>(2<i>x</i> + 3)</span></span>
+            <span id="ln-legend-target" hidden><i class="sw sw-target"></i> target <span class="m" id="ln-target-eq"></span></span>
           </div>
         </div>
         <div id="ln-after" class="ln-after" aria-live="polite"></div>
@@ -65,7 +87,7 @@
           </div>
 
           <div class="card">
-            <h2>2. Build <span class="m">y = <i>f</i>(<i>a</i><i>x</i> + <i>b</i>)</span></h2>
+            <h2>2. Build <span class="m" id="ex-build-eq"></span></h2>
             <div class="field">
               <span class="label">Value of <i class="m">a</i></span>
               <div class="chips" id="ex-a">
@@ -91,7 +113,7 @@
           <div class="card expr-card">
             <div class="expr-big m" id="ex-expr"></div>
             <div class="expr-sub">
-              <span class="label">Factorise the bracket</span>
+              <span class="label" id="ex-factor-label"></span>
               <div class="m expr-factor" id="ex-factor"></div>
               <p class="small" id="ex-factor-note"></p>
             </div>
@@ -99,7 +121,7 @@
 
           <div class="card idea">
             <h2>Key idea</h2>
-            <p>Inside the bracket, the graph undoes what happens to <i>x</i>, so the transformations come in the <b>reverse order</b>.</p>
+            <p id="ex-idea-intro"></p>
             <ul id="ex-idea"></ul>
           </div>
         </aside>
@@ -107,11 +129,7 @@
         <div class="stage">
           <div class="card">
             <span class="label">Choose an order</span>
-            <div class="seg route" id="ex-route">
-              <button data-route="factor" class="on">Factorise: stretch, then translate</button>
-              <button data-route="translate">Don't factorise: translate, then stretch</button>
-              <button data-route="mistake" class="warn">Common mistake</button>
-            </div>
+            <div class="seg route" id="ex-route"></div>
 
             <div class="graph-wrap">
               <svg id="ex-graph" class="graph" aria-label="Graph showing the transformation"></svg>
@@ -133,7 +151,7 @@
 
           <div class="card">
             <h2>Follow the points</h2>
-            <p class="small">Only the <i>x</i>-coordinates change. The <i>y</i>-coordinates stay the same throughout.</p>
+            <p class="small" id="ex-table-note"></p>
             <div class="table-wrap" id="ex-table"></div>
           </div>
         </div>
@@ -169,11 +187,11 @@
                   <span class="ord"></span>
                   <span class="grip" title="Drag to reorder" aria-hidden="true">⠿</span>
                 </div>
-                <span class="label">Translate horizontally</span>
+                <span class="label" id="mt-tr-label"></span>
                 <div class="row">
                   <select id="mt-dir" aria-label="Direction">
-                    <option value="left">left</option>
-                    <option value="right">right</option>
+                    <option value="neg"></option>
+                    <option value="pos"></option>
                   </select>
                   <span>by</span>
                   <input id="mt-tr-amt" type="text" placeholder="e.g. 3/2" aria-label="Translation amount">
@@ -185,12 +203,12 @@
                   <span class="ord"></span>
                   <span class="grip" title="Drag to reorder" aria-hidden="true">⠿</span>
                 </div>
-                <span class="label">Stretch parallel to the <i>x</i>-axis</span>
+                <span class="label" id="mt-sf-label"></span>
                 <div class="row">
                   <span>scale factor</span>
                   <input id="mt-sf" type="text" placeholder="e.g. 1/2" aria-label="Scale factor">
                 </div>
-                <label class="refl" id="mt-refl-wrap" hidden><input type="checkbox" id="mt-refl"> and reflect in the <i>y</i>-axis</label>
+                <label class="refl" id="mt-refl-wrap" hidden><input type="checkbox" id="mt-refl"> <span id="mt-refl-label"></span></label>
               </div>
             </div>
             <button id="mt-play" class="btn primary full">▶ Play both steps</button>
@@ -249,11 +267,7 @@
             </div>
             <div class="watch" id="qz-watch" hidden>
               <span class="label">Watch it happen</span>
-              <div class="row">
-                <button class="btn" data-route="factor">Stretch, then translate</button>
-                <button class="btn" data-route="translate">Translate, then stretch</button>
-                <button class="btn warn-btn" data-route="mistake">Common mistake</button>
-              </div>
+<div class="row" id="qz-watch-row"></div>
             </div>
             <div class="explain" id="qz-caption" aria-live="polite">Answer all three parts to unlock the animation.</div>
             <button id="qz-next" class="btn primary full" hidden>Next question ▶</button>
