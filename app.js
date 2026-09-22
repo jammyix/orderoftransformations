@@ -1562,9 +1562,18 @@
     selectTab('learn');
   }
 
+  // GoatCounter page view per topic. Does nothing if the script is absent or blocked.
+  function trackView() {
+    const path = location.pathname + location.hash;
+    const send = () => { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title: document.title }); };
+    if (document.readyState === 'complete') send();
+    else window.addEventListener('load', send, { once: true });
+  }
+
   function route() {
     const h = location.hash.replace('#', '');
     if (MODES[h]) enterMode(h); else showMenu();
+    trackView();
   }
 
   $$('.menu-card').forEach(card => card.addEventListener('click', () => { location.hash = card.dataset.mode; window.scrollTo(0, 0); }));
